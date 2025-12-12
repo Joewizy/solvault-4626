@@ -77,31 +77,20 @@ pub mod reward_vault {
     pub fn withdraw_sol(ctx: Context<WithdrawSol>, amount: u64) -> Result<()> {
         // Get refrences for all accounts
         let vault = &mut ctx.accounts.vault;
-        let user_account = &mut ctx.accounts.user_account;   
-        
+        let user_account = &mut ctx.accounts.user_account;
+
         // Check conditions before interactions
         require!(user_account.amount_deposited >= amount, ErrorCode::InsufficientFunds);
         require!(vault.amount_deposited >= amount, ErrorCode::VaultInsufficientFunds);
 
         let vault_info = vault.to_account_info();
         let signer_info = ctx.accounts.signer.to_account_info();
-        let system_program = ctx.accounts.system_program.to_account_info();
+        let system_program_info = ctx.accounts.system_program.to_account_info();
 
-        // Send the transfer tx
-        let transfer_ix = transfer(&vault_info.key(), &signer_info.key(), amount);
-        
-        // Get the vault bump from the context
-        let vault_bump = ctx.bumps.vault;
-        let seeds = &[b"vault".as_ref(), &[vault_bump]];
-        let signer_seeds = &[&seeds[..]];
+        // transfer sol to user
+        **vault_info.try_borrow_mut_lamports()? -= amount;
+        **signer_info.try_borrow_mut_lamports()? += amount;
 
-        // Execute transfer
-        invoke_signed(
-            &transfer_ix,
-            &[vault_info, signer_info, system_program],
-            signer_seeds
-        )?;
-        
         // Update account states after transfer
         user_account.amount_deposited = user_account
             .amount_deposited
@@ -120,7 +109,7 @@ pub struct Initialize<'info> {
     #[account(
         init,
         payer = authority,
-        space = 8 + Config::LEN, 
+        space = 8 + Config::LEN,
         seeds = [b"config"],
         bump
     )]
@@ -177,7 +166,7 @@ pub struct InitUser<'info> {
 pub struct DepositSol<'info> {
     #[account(mut, seeds = [b"user", signer.key().as_ref()], bump = user_account.bump)]
     pub user_account: Account<'info, UserAccount>,
-    
+
     #[account(mut, seeds = [b"vault"], bump)]
     pub vault: Account<'info, Vault>,
 
@@ -199,15 +188,14 @@ pub struct WithdrawSol<'info> {
     pub signer: Signer<'info>,
 
     pub system_program: Program<'info, System>,
-    
 }
 
 #[account]
 pub struct Config {
-    pub authority: Pubkey,      // 32
-    pub mint: Pubkey,           // 32
-    pub reward_rate: u64,       // 8
-    pub bump: u8,               // 1
+    pub authority: Pubkey, // 32
+    pub mint: Pubkey,      // 32
+    pub reward_rate: u64,  // 8
+    pub bump: u8,          // 1
 }
 
 impl Config {
@@ -216,10 +204,10 @@ impl Config {
 
 #[account]
 pub struct UserAccount {
-    pub user: Pubkey,           // 32
-    pub amount_deposited: u64,  // 8
-    pub reward_earned: u64,     // 8
-    pub bump: u8,               // 1
+    pub user: Pubkey,          // 32
+    pub amount_deposited: u64, // 8
+    pub reward_earned: u64,    // 8
+    pub bump: u8,              // 1
 }
 
 impl UserAccount {
@@ -228,8 +216,8 @@ impl UserAccount {
 
 #[account]
 pub struct Vault {
-    pub locked: bool,           // 1
-    pub amount_deposited: u64,  // 8
+    pub locked: bool,          // 1
+    pub amount_deposited: u64, // 8
 }
 
 impl Vault {

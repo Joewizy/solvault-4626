@@ -95,7 +95,8 @@ describe("reward_vault", () => {
     console.log("Vault struct:", vault);
 
     // Try to withdraw SOL
-    const withdrawTx = await program.methods
+    try {
+      const withdrawTx = await program.methods
         .withdrawSol(amount)
         .accounts({
           userAccount: userAccountPDA,
@@ -103,12 +104,16 @@ describe("reward_vault", () => {
           vault: vaultPDA,
           systemProgram: anchor.web3.SystemProgram.programId,
         }).signers([wallet.payer]).rpc();
-    
+
     console.log("Withdraw tx:", withdrawTx);
     const userAccount2 = await program.account.userAccount.fetch(userAccountPDA);
     console.log("UserAccount struct:", userAccount2);
 
     const vault2 = await program.account.vault.fetch(vaultPDA);
     console.log("Vault struct:", vault2);
+    } catch (error) {
+      console.log("Error withdrawing sol:", error);
+      throw error; 
+    }
   });
 });
