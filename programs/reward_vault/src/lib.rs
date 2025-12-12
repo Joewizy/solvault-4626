@@ -5,8 +5,15 @@ use anchor_lang::solana_program::system_instruction::transfer;
 
 declare_id!("GpAKr7A3K3w6KadMkQndFJdzZnwnifUyWF3Xwe8XZhtH");
 
+mod events;
+use crate::events::*;
+
 #[program]
 pub mod reward_vault {
+    use anchor_spl::token_interface::spl_token_metadata_interface::instruction::emit;
+
+    use crate::events::DepositEvent;
+
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>, reward_rate: u64) -> Result<()> {
@@ -22,6 +29,12 @@ pub mod reward_vault {
         vault.locked = false;
         vault.amount_deposited = 0;
 
+        emit!(InitializeEvent {
+            authority: config.authority,
+            mint: config.mint,
+            reward_rate,
+        });
+
         Ok(())
     }
 
@@ -34,6 +47,10 @@ pub mod reward_vault {
         user.shares_minted = 0;
         user.bump = ctx.bumps.user_account;
 
+        emit!(UserInitializedEvent {
+            user: ctx.accounts.signer.key(),
+        });
+
         Ok(())
     }
 
@@ -45,7 +62,7 @@ pub mod reward_vault {
         require!(signer_balance >= amount, ErrorCode::InsufficientFunds);
 
         // Transfer SOL from signer → vault PDA (CPI to system program)
-        let ix = anchor_lang::solana_program::system_instruction::transfer(
+        let ix = transfer(
             &signer.key(),
             &ctx.accounts.vault.key(),
             amount,
@@ -100,6 +117,12 @@ pub mod reward_vault {
             .checked_add(amount)
             .ok_or(ErrorCode::Overflow)?;
 
+        emit!(DepositEvent {
+            user: user_account.user,
+            amount_sol: amount,
+            shares_minted: reward,
+        });
+
         Ok(())
     }
 
@@ -138,6 +161,12 @@ pub mod reward_vault {
 
         let vault = &mut ctx.accounts.vault;
         vault.amount_deposited -= sol_amount;
+
+        emit!(WithdrawEvent {
+            user: ctx.accounts.signer.key(),
+            amount_sol: sol_amount,
+            shares_burned: shares,
+        });
 
         Ok(())
     }
