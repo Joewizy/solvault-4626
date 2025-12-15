@@ -49,15 +49,36 @@ A Solana program that implements a reward vault system where users can deposit S
 ```
 reward-vault/
 ├── programs/
-│   └── reward-vault/
+│   └── reward_vault/         # On-chain program
 │       └── src/
-│           └── lib.rs        # Program logic
-├── tests/
-│   └── reward-vault.ts       # Test suite
-├── .anchor/                  # Anchor config
-├── app/                      # Frontend (if applicable)
-├── Anchor.toml               # Anchor configuration
-└── Cargo.toml               # Rust dependencies
+│           ├── lib.rs        # Program entry point and instruction handlers
+│           ├── instructions/ # Instruction handlers
+│           │   ├── mod.rs    # Module exports
+│           │   ├── deposit.rs
+│           │   ├── initialize.rs
+│           │   └── withdraw.rs
+│           ├── state.rs      # Program state and account structures
+│           ├── events.rs     # Event definitions
+│           ├── errors.rs     # Custom error handling
+│           ├── constants.rs  # Program constants
+│           └── utils.rs      # Utility functions
+│
+├── tests/                   # Integration and unit tests
+│   └── reward-vault.ts      # Test suite
+│
+├── app/                     # Frontend application (if applicable)
+│   ├── src/
+│   └── package.json
+│
+├── migrations/              # Program deployment scripts
+├── .anchor/                 # Anchor workspace configuration
+│   ├── program-id.json
+│   └── ...
+│
+├── Anchor.toml              # Anchor configuration
+├── Cargo.toml               # Rust workspace configuration
+├── package.json             # Node.js dependencies
+└── tsconfig.json            # TypeScript configuration
 ```
 
 ## 📚 Usage

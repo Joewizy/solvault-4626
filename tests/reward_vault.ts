@@ -51,7 +51,7 @@ describe("reward_vault", () => {
 
   it("Initialize program", async () => {
     const tx = await program.methods
-      .initialize(new anchor.BN(100)) // reward_rate = 100
+      .initializeVault(new anchor.BN(100)) // reward_rate = 100
       .accounts({
         config: configPDA,
         mint: mint.publicKey,
