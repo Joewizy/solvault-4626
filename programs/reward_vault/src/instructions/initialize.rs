@@ -59,7 +59,9 @@ pub struct Initialize<'info> {
         payer = authority,
         mint::decimals = 9,
         mint::authority = mint_authority,
-        mint::freeze_authority = mint_authority
+        mint::freeze_authority = mint_authority,
+        seeds = [b"mint"],
+        bump,
     )]
     pub mint: Account<'info, Mint>,
 

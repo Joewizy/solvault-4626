@@ -33,6 +33,7 @@ describe("reward_vault", () => {
 
   // Mint keypair
   const mint = anchor.web3.Keypair.generate();
+  console.log("mint address", mint.publicKey.toString())
 
   // User PDA
   const [userAccountPDA] = anchor.web3.PublicKey.findProgramAddressSync(

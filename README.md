@@ -1,13 +1,13 @@
-# 🏦 Reward Vault Program
+# 🏦 Sol-Vault 
 
-A Solana program that implements a reward vault system where users can deposit SOL and earn reward tokens based on a fixed reward rate.
+An ERC4626 implementation style built on Solana, this program implements a reward vault system where users can deposit SOL and earn shares tokens that represent the value of SOL deposited. When a user wants to redeem their SOL and any reward accrued, the user has to burn their shares(tokens).
 
 ## 🚀 Features
 
-- **Token Minting**: Creates a custom SPL token for rewards
+- **Token Minting**: Mints shares to represent deposited SOL
 - **SOL Vault**: Secure PDA-based vault for holding user deposits
-- **Reward System**: Earn tokens based on deposited SOL
-- **Secure Withdrawals**: Burn tokens to withdraw SOL
+- **Reward System**: Earn reward tokens based on deposited SOL
+- **Secure Withdrawals**: Burn shares to withdraw SOL
 - **Admin Controls**: Update reward rates
 
 ## 📦 Prerequisites
@@ -17,25 +17,40 @@ A Solana program that implements a reward vault system where users can deposit S
 - [Anchor](https://www.anchor-lang.com/docs/installation)
 - [Node.js](https://nodejs.org/) (for tests)
 
-## 🛠️ Installation
+## 🌐 Frontend Application
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/reward-vault.git
-   cd reward-vault
-   ```
+### Quick Start
+```bash
+# Navigate to frontend
+cd frontend/solana-reward-token-vault
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+# Install dependencies
+npm install
 
-3. Build the program:
-   ```bash
-   anchor build
-   ```
+# Start the app
+npm run dev
+```
+You would need to have some SOL on devnet to interact with the dApp if you don't have any you can request here [request aidrop](https://faucet.solana.com/)
 
-4. Update the program ID in:
+### How to Use
+1. Open `http://localhost:3000` in your browser
+2. Connect your Solana wallet (Phantom, Solflare, etc.)
+3. Initialize your account
+4. Deposit SOL and get shares
+5. Withdraw (SOL anytime) by burning shares
+
+## 🔧 Development Commands
+
+```bash
+# Build the program
+anchor build
+
+# Run tests
+anchor test
+
+# Deploy to devnet
+anchor deploy --provider.cluster devnet
+```
    - `Anchor.toml`
    - `programs/reward-vault/src/lib.rs`
 
@@ -63,12 +78,24 @@ reward-vault/
 │           ├── constants.rs  # Program constants
 │           └── utils.rs      # Utility functions
 │
+├── frontend/                 # React frontend application
+│   └── solana-reward-token-vault/
+│       ├── app/             # Next.js app directory
+│       │   ├── page.tsx     # Main page component
+│       │   └── layout.tsx   # Root layout
+│       ├── components/      # React components
+│       │   └── vault-dashboard.tsx
+│       ├── hooks/           # Custom React hooks
+│       │   └── useVault.ts
+│       ├── types/           # TypeScript interfaces
+│       │   └── interface.ts
+│       ├── utils/           # Utility functions
+│       │   └── utils.ts
+│       ├── package.json     # Frontend dependencies
+│       └── next.config.js   # Next.js configuration
+│
 ├── tests/                   # Integration and unit tests
 │   └── reward-vault.ts      # Test suite
-│
-├── app/                     # Frontend application (if applicable)
-│   ├── src/
-│   └── package.json
 │
 ├── migrations/              # Program deployment scripts
 ├── .anchor/                 # Anchor workspace configuration
@@ -77,8 +104,7 @@ reward-vault/
 │
 ├── Anchor.toml              # Anchor configuration
 ├── Cargo.toml               # Rust workspace configuration
-├── package.json             # Node.js dependencies
-└── tsconfig.json            # TypeScript configuration
+└── package.json             # Node.js dependencies
 ```
 
 ## 📚 Usage
@@ -128,13 +154,3 @@ anchor test
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Solana Team
-- Anchor Framework
-- SPL Token Program
-
----
-
-Built with ❤️ for the Solana ecosystem

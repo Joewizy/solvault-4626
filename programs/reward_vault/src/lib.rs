@@ -10,7 +10,7 @@ pub mod state;
 
 pub use instructions::*;
 
-declare_id!("GpAKr7A3K3w6KadMkQndFJdzZnwnifUyWF3Xwe8XZhtH");
+declare_id!("BfUFjVw9XxddRMFWzsJt2HS8Lg1xuaBrRcrTVAa34Y6h");
 
 #[program]
 pub mod reward_vault {
