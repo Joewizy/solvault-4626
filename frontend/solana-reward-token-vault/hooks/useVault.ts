@@ -2,7 +2,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, getAssociatedTokenAddressSync, createAssociatedTokenAccountInstruction, getAccount } from "@solana/spl-token";
 import * as anchor from "@coral-xyz/anchor";
-import idl from "../../../target/idl/reward_vault.json";
+import idl from "../reward_vault.json";
 import { useState } from "react";
 import { Transaction } from "@solana/web3.js";
 import { VaultOperationResult } from "@/types/interface";
