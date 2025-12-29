@@ -164,7 +164,7 @@ export default function VaultDashboard({
   }
 
   // Show loading state while data is being fetched
-  if (!userAccount || loading) {
+  if (!userAccount) {
     return (
       <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
         <div className="flex items-center justify-center min-h-[400px]">
