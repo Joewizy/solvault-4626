@@ -163,6 +163,20 @@ export default function VaultDashboard({
     )
   }
 
+  // Show loading state while data is being fetched
+  if (!userAccount || loading) {
+    return (
+      <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center space-y-4">
+            <RefreshCw className="w-8 h-8 animate-spin mx-auto text-primary" />
+            <p className="text-sm text-muted-foreground">Loading vault data...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
       {/* Header */}
@@ -179,9 +193,9 @@ export default function VaultDashboard({
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Deposited" value={`${userAccount.amountDeposited.toFixed(4)} SOL`} icon={<Wallet />} />
-        <StatCard label="Rewards Earned" value={`${userAccount.rewardEarned.toFixed(4)} SOL`} icon={<Activity />} />
-        <StatCard label="Your Shares" value={userAccount.sharesMinted.toFixed(2)} icon={<Coins />} />
+        <StatCard label="Deposited" value={`${userAccount?.amountDeposited?.toFixed(4) || "0"} SOL`} icon={<Wallet />} />
+        <StatCard label="Rewards Earned" value={`${userAccount?.rewardEarned?.toFixed(4) || "0"} SOL`} icon={<Activity />} />
+        <StatCard label="Your Shares" value={userAccount?.sharesMinted?.toFixed(2) || "0"} icon={<Coins />} />
         <StatCard 
           label="Price per Share 1 SOL = 200 Shares" 
           value={200} 
@@ -194,7 +208,7 @@ export default function VaultDashboard({
         <Card className="bg-card/50 border p-4 rounded-lg">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Total Vault TVL:</span>
-            <span className="font-semibold">{vaultData.amountDeposited.toFixed(4)} SOL</span>
+            <span className="font-semibold">{vaultData?.amountDeposited?.toFixed(4) || "0"} SOL</span>
           </div>
         </Card>
       )}
@@ -250,7 +264,7 @@ export default function VaultDashboard({
             <div className="space-y-1.5">
               <div className="flex justify-between text-xs">
                 <label className="font-medium text-muted-foreground">Shares to Burn</label>
-                <span className="text-muted-foreground">Available: {userAccount.sharesMinted}</span>
+                <span className="text-muted-foreground">Available: {userAccount?.sharesMinted || "0"}</span>
               </div>
               <Input
                 type="number"

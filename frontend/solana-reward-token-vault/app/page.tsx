@@ -36,6 +36,11 @@ export default function VaultPage() {
   const handleInitUser = async () => {
     const toastId = toast.loading("Initializing user account...");
     try {
+      if (!connected) {
+        toast.error("Please connect your wallet first", { id: toastId });
+        return;
+      }
+      
       const response = await initUser()
 
       if (response.success) {
